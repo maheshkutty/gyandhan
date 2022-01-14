@@ -1,17 +1,44 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import StudentForm from "./student/StudentForm";
+import LoginForm from "./login/LoginForm";
+import MentorForm from "./mentors/MentorsForm";
+import TopicSelection from "./mentors/TopicSelection";
+import StudentHome from "./student/Home";
+import RequireAuth from "./context/RequireAuth";
+import { Provider } from "./context/AuthProvider";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <BrowserRouter>
+    <React.StrictMode>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/signup" element={<StudentForm />} />
+        <Route
+          path="/login"
+          element={
+            <Provider>
+              <LoginForm />
+            </Provider>
+          }
+        />
+        <Route path="/mentor" element={<MentorForm />} />
+        <Route path="/mentor/topics" element={<TopicSelection />} />
+        <Route
+          path="/student/home"
+          element={
+            <Provider>
+              <RequireAuth>
+                <StudentHome />
+              </RequireAuth>
+            </Provider>
+          }
+        />
+      </Routes>
+    </React.StrictMode>
+  </BrowserRouter>,
+  document.getElementById("root")
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
