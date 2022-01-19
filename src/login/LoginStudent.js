@@ -12,9 +12,14 @@ import {
   browserSessionPersistence,
 } from "firebase/auth";
 import { Context } from "../context/AuthProvider";
+import Alert from "@mui/material/Alert";
+import gyandhan from "../api/gyandhan";
+import './login.css';
 
-export default function LoginForm() {
+export default function LoginStudent() {
   const { state, signin } = useContext(Context);
+  const [errorMsg, setErrorMsg] = useState(false);
+
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -30,18 +35,33 @@ export default function LoginForm() {
     }),
     onSubmit: async (value) => {
       try {
-        const auth = getAuth(firebaseApp);
-        setPersistence(auth, browserSessionPersistence).then(async () => {
-          const data = await signInWithEmailAndPassword(
-            auth,
-            value.email,
-            value.pass
-          );
-          signin({ email: data.user.email, userid: data.user.uid });
-          navigate("/student/home");
-        });
+        const payload = {
+          email: value.email,
+          pass: value.pass,
+        };
+        let res = await gyandhan.post("/student/login", payload);
+        res = res.data;
+        if (res.status == "success") {
+          const auth = getAuth(firebaseApp);
+          setPersistence(auth, browserSessionPersistence).then(async () => {
+            const data = await signInWithEmailAndPassword(
+              auth,
+              value.email,
+              value.pass
+            );
+            if (data != null) {
+              signin({ email: data.user.email, userid: data.user.uid });
+              navigate("/student/home");
+            } else {
+              setErrorMsg(true);
+            }
+          });
+        } else {
+          setErrorMsg(true);
+        }
       } catch (error) {
         console.log(error);
+        setErrorMsg(true);
       }
     },
   });
@@ -50,9 +70,14 @@ export default function LoginForm() {
     <Header>
       <Helmet bodyAttributes={{ style: "background-color : #364F68" }} />
       <div className="container">
+        {errorMsg ? (
+          <Alert severity="error" className="mt-2">
+            Invalid email and password !!!!
+          </Alert>
+        ) : null}
         <div className="row justify-content-center">
           <div className="col-5 formContainer">
-            <h1 className="text-center">Login</h1>
+            <h1 className="text-center">Student Login</h1>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -73,7 +98,7 @@ export default function LoginForm() {
                   onChange={formik.handleChange}
                 />
                 {formik.touched.email && formik.errors.email ? (
-                  <div>{formik.errors.email}</div>
+                  <div className="formError">{formik.errors.email}</div>
                 ) : null}
               </div>
               <div className="mb-1">
@@ -89,7 +114,7 @@ export default function LoginForm() {
                   onChange={formik.handleChange}
                 />
                 {formik.touched.pass && formik.errors.pass ? (
-                  <div>{formik.errors.pass}</div>
+                  <div className="formError">{formik.errors.pass}</div>
                 ) : null}
               </div>
               <div>

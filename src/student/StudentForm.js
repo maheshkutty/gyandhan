@@ -130,7 +130,7 @@ export default function StudentForm() {
                   onChange={formik.handleChange}
                 />
                 {formik.touched.name && formik.errors.name ? (
-                  <div>{formik.errors.name}</div>
+                  <div className="formError">{formik.errors.name}</div>
                 ) : null}
               </div>
               <div className="mb-1">
@@ -152,7 +152,7 @@ export default function StudentForm() {
                   <option value="arts">Arts</option>
                 </select>
                 {formik.touched.stream && formik.errors.stream ? (
-                  <div>{formik.errors.stream}</div>
+                  <div className="formError">{formik.errors.stream}</div>
                 ) : null}
               </div>
               <div className="mb-1">
@@ -168,7 +168,7 @@ export default function StudentForm() {
                   onChange={formik.handleChange}
                 />
                 {formik.touched.class && formik.errors.class ? (
-                  <div>{formik.errors.class}</div>
+                  <div className="formError">{formik.errors.class}</div>
                 ) : null}
               </div>
               <div className="mb-1">
@@ -184,7 +184,7 @@ export default function StudentForm() {
                   onChange={formik.handleChange}
                 />
                 {formik.touched.score && formik.errors.score ? (
-                  <div>{formik.errors.score}</div>
+                  <div className="formError">{formik.errors.score}</div>
                 ) : null}
               </div>
               <div className="mb-1">
@@ -200,7 +200,7 @@ export default function StudentForm() {
                   onChange={formik.handleChange}
                 />
                 {formik.touched.add && formik.errors.add ? (
-                  <div>{formik.errors.add}</div>
+                  <div className="formError">{formik.errors.add}</div>
                 ) : null}
               </div>
               <div className="mb-1">
@@ -216,7 +216,7 @@ export default function StudentForm() {
                   onChange={formik.handleChange}
                 />
                 {formik.touched.phone && formik.errors.phone ? (
-                  <div>{formik.errors.phone}</div>
+                  <div className="formError">{formik.errors.phone}</div>
                 ) : null}
               </div>
               <div className="mb-1">
@@ -232,7 +232,7 @@ export default function StudentForm() {
                   onChange={formik.handleChange}
                 />
                 {formik.touched.email && formik.errors.email ? (
-                  <div>{formik.errors.email}</div>
+                  <div className="formError">{formik.errors.email}</div>
                 ) : null}
               </div>
               <div className="mb-2">
@@ -248,7 +248,7 @@ export default function StudentForm() {
                   onChange={formik.handleChange}
                 />
                 {formik.touched.pass && formik.errors.pass ? (
-                  <div>{formik.errors.pass}</div>
+                  <div className="formError">{formik.errors.pass}</div>
                 ) : null}
               </div>
               <div className="mb-1">

@@ -69,6 +69,7 @@ export default function MentorForm() {
         };
         let res = await gyandhan.post("/mentor/register", formData);
         res = res.data;
+        console.log(res);
         if (res.status == "success") {
           const auth = getAuth(firebaseApp);
           const user = await createUserWithEmailAndPassword(
@@ -76,6 +77,7 @@ export default function MentorForm() {
             values.email,
             values.pass
           );
+          console.log(user);
           setSucessMsg(true);
           setErrorMsg(false);
         } else {

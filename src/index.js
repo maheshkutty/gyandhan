@@ -4,11 +4,18 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import StudentForm from "./student/StudentForm";
-import LoginForm from "./login/LoginForm";
+import LoginHome from "./login/LoginHome";
 import MentorForm from "./mentors/MentorsForm";
 import TopicSelection from "./mentors/TopicSelection";
 import StudentHome from "./student/Home";
 import RequireAuth from "./context/RequireAuth";
+import LoginStudent from "./login/LoginStudent";
+import LoginMentor from "./login/LoginMentor";
+import MentorHome from "./mentors/MentorHome";
+import TopicSearch from "./student/TopicsSearch";
+import LiveClasses from "./student/LiveClasses";
+import Doubts from "./student/Doubts";
+
 import { Provider } from "./context/AuthProvider";
 
 ReactDOM.render(
@@ -17,11 +24,20 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/signup" element={<StudentForm />} />
+        <Route path="/login" element={<LoginHome />} />
         <Route
-          path="/login"
+          path="/login/student"
           element={
             <Provider>
-              <LoginForm />
+              <LoginStudent />
+            </Provider>
+          }
+        />
+        <Route
+          path="/login/mentor"
+          element={
+            <Provider>
+              <LoginMentor />
             </Provider>
           }
         />
@@ -34,6 +50,43 @@ ReactDOM.render(
               <RequireAuth>
                 <StudentHome />
               </RequireAuth>
+            </Provider>
+          }
+        />
+        <Route
+          path="/student/topics"
+          element={
+            <Provider>
+              <RequireAuth>
+                <TopicSearch />
+              </RequireAuth>
+            </Provider>
+          }
+        />
+        <Route
+          path="/mentor/home"
+          element={
+            <Provider>
+              <RequireAuth>
+                <MentorHome />
+              </RequireAuth>
+            </Provider>
+          }
+        />
+        <Route
+          path="/student/doubts"
+          element={
+            <Provider>
+              <Doubts />
+            </Provider>
+          }
+        />
+
+        <Route
+          path="/student/classes"
+          element={
+            <Provider>
+              <LiveClasses />
             </Provider>
           }
         />
