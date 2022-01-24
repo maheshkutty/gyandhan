@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import SideMenu from "./SideMenu";
@@ -15,6 +15,7 @@ import "./doubts.css";
 import gyandhan from "../api/gyandhan";
 import Alert from "@mui/material/Alert";
 import AlertMsg from "../utility/AlertMsg";
+import moment from "moment";
 
 const mainTopics = ["geography", "maths"];
 const answers = [
@@ -25,56 +26,56 @@ const answers = [
   }
 ]
 
-const questions = [
-  {
-    id:"aid",
-    question: "What is latitute longitute?",
-    subject: "geogrphy",
-    dateTime: "12/07/1998 12:00",
-    sname:"",
-    status:"a p"
-  },
-  {
-    question: "What is latitute longitute?",
-    subject: "geogrphy",
-    dateTime: "12/07/1998 12:00",
-  },
-  {
-    question: "What is latitute longitute?",
-    subject: "geogrphy",
-    dateTime: "12/07/1998 12:00",
-  },
-  {
-    question: "What is latitute longitute?",
-    subject: "geogrphy",
-    dateTime: "12/07/1998 12:00",
-  },
-  {
-    question: "What is latitute longitute?",
-    subject: "geogrphy",
-    dateTime: "12/07/1998 12:00",
-  },
-  {
-    question: "What is latitute longitute?",
-    subject: "geogrphy",
-    dateTime: "12/07/1998 12:00",
-  },
-  {
-    question: "What is latitute longitute?",
-    subject: "geogrphy",
-    dateTime: "12/07/1998 12:00",
-  },
-  {
-    question: "What is latitute longitute?",
-    subject: "geogrphy",
-    dateTime: "12/07/1998 12:00",
-  },
-  {
-    question: "What is latitute longitute?",
-    subject: "geogrphy",
-    dateTime: "12/07/1998 12:00",
-  },
-];
+// const questions = [
+//   {
+//     id:"aid",
+//     question: "What is latitute longitute?",
+//     subject: "geogrphy",
+//     dateTime: "12/07/1998 12:00",
+//     sname:"",
+//     status:"a p"
+//   },
+//   {
+//     question: "What is latitute longitute?",
+//     subject: "geogrphy",
+//     dateTime: "12/07/1998 12:00",
+//   },
+//   {
+//     question: "What is latitute longitute?",
+//     subject: "geogrphy",
+//     dateTime: "12/07/1998 12:00",
+//   },
+//   {
+//     question: "What is latitute longitute?",
+//     subject: "geogrphy",
+//     dateTime: "12/07/1998 12:00",
+//   },
+//   {
+//     question: "What is latitute longitute?",
+//     subject: "geogrphy",
+//     dateTime: "12/07/1998 12:00",
+//   },
+//   {
+//     question: "What is latitute longitute?",
+//     subject: "geogrphy",
+//     dateTime: "12/07/1998 12:00",
+//   },
+//   {
+//     question: "What is latitute longitute?",
+//     subject: "geogrphy",
+//     dateTime: "12/07/1998 12:00",
+//   },
+//   {
+//     question: "What is latitute longitute?",
+//     subject: "geogrphy",
+//     dateTime: "12/07/1998 12:00",
+//   },
+//   {
+//     question: "What is latitute longitute?",
+//     subject: "geogrphy",
+//     dateTime: "12/07/1998 12:00",
+//   },
+// ];
 export default function Doubts() {
   const [subjects, setSubjects] = useState(mainTopics);
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -84,7 +85,25 @@ export default function Doubts() {
     flag: false,
     msg: null,
   });
+  const [questions, setQuestions] = useState([]);
+
   const qModal= useRef(null);
+
+  useEffect(() => {
+    async function callDoubts(){
+      let res = await gyandhan.get("/doubts");
+      res = res.data;
+      res.forEach(element => {
+        element["created_at"] = moment(element["created_at"]).format("DD-MM-YYYY H:mm:a")
+
+      });
+      setQuestions(res);
+      return () => {
+        setQuestions([]);
+      }
+    }
+    return callDoubts();
+  },[])
 
   const subjectMenuItem = () => {
     return subjects.map((item) => {
@@ -120,9 +139,9 @@ export default function Doubts() {
   };
 
   const listQuestion = () => {
-    return questions.map((item) => {
+    return questions.map((item, i) => {
       return (
-        <Card sx={{ maxWidth: 1000, margin: "0.5em" }}>
+        <Card key={i} sx={{ maxWidth: 1000, margin: "0.5em" }}>
           <CardContent>
             <Typography
               variant="caption"
@@ -133,16 +152,16 @@ export default function Doubts() {
               }}
             >
               ➡️
-              {item.subject}{" "}
+              {item.d_title}{" "}
             </Typography>
             <Typography
               variant="caption"
               sx={{ fontWeight: "bold", fontSize: "1em" }}
             >
-              {item.dateTime}
+              {item.created_at}
             </Typography>
             <Typography gutterBottom variant="h5" component="div">
-              {item.question}
+              {item.d_contents}
             </Typography>
           </CardContent>
           <CardActions>

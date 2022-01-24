@@ -7,6 +7,7 @@ const AuthReducer = (state, actions) => {
         ...state,
         email: actions.payload.email,
         userid: actions.payload.userid,
+        uniqueId: actions.payload.uniqueId,
       };
     case "signout":
       return {
@@ -14,18 +15,22 @@ const AuthReducer = (state, actions) => {
         userid: "",
       };
     default:
-      return state
+      return state;
   }
 };
 
 const signin = (dispatch) => {
-  return async ({ email, userid}) => {
+  return async ({ email, userid, uniqueId }) => {
     console.log(email);
     dispatch({
       type: "signin",
-      payload: { email, userid},
+      payload: { email, userid, uniqueId },
     });
   };
 };
 
-export const { Context, Provider } = createDataContext(AuthReducer, {signin}, {email:"", userid:""});
+export const { Context, Provider } = createDataContext(
+  AuthReducer,
+  { signin },
+  { email: "", userid: "" }
+);

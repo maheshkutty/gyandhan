@@ -17,8 +17,8 @@ export default ({ children }) => {
     onAuthStateChanged(auth, (user) => {
       console.log(user);
       if (user != null && state.email == "") {
-        signin({ email: user.email, uid: user.uid });
-        navigate("/student/home");
+        const uniqueId = sessionStorage.getItem("uniqueId");
+        signin({ email: user.email, uid: user.uid, uniqueId });
       }
     });
   };

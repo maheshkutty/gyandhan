@@ -15,6 +15,9 @@ import MentorHome from "./mentors/MentorHome";
 import TopicSearch from "./student/TopicsSearch";
 import LiveClasses from "./student/LiveClasses";
 import Doubts from "./student/Doubts";
+import MeetRequest from "./mentors/MeetRequest";
+import BlogsList from "./student/BlogsList";
+import BlogsContent from "./student/BlogsContent";
 
 import { Provider } from "./context/AuthProvider";
 
@@ -81,12 +84,35 @@ ReactDOM.render(
             </Provider>
           }
         />
-
         <Route
           path="/student/classes"
           element={
             <Provider>
               <LiveClasses />
+            </Provider>
+          }
+        />
+        <Route
+          path="/blogs"
+          element={
+            <Provider>
+              <BlogsList />
+            </Provider>
+          }
+        />
+        <Route
+          path="/blogscontent"
+          element={
+            <Provider>
+              <BlogsContent />
+            </Provider>
+          }
+        />
+        <Route
+          path="/mentor/requests"
+          element={
+            <Provider>
+              <MeetRequest />
             </Provider>
           }
         />

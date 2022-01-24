@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import SideMenu from "./SideMenu";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -23,6 +23,8 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
+import gyandhan from "../api/gyandhan";
+import { Context } from "../context/AuthProvider";
 
 //import
 
@@ -33,31 +35,64 @@ const mainDays = [
 ];
 
 const meetRequest = {
-  "sid":"8",
-  "daysOfWeek":["sunday"],
-  "time":"17-07-2021 09:00",
-  "topic":["class 10 maths"]
-}
+  sid: "8",
+  daysOfWeek: ["sunday"],
+  time: "17-07-2021 09:00",
+  topic: ["class 10 maths"],
+};
 
 const meetResponse = {
-  "sid":"8",
-  "daysOfWeek":["sunday"],
-  "time":"17-07-2021 09:00",
-  "topic":["class 10 maths"],
-  "meetLink":"",
-  "tname":""
-}
+  sid: "8",
+  daysOfWeek: ["sunday"],
+  time: "17-07-2021 09:00",
+  topic: ["class 10 maths"],
+  meetLink: "",
+  tname: "",
+};
 
 export default function TopicSearch() {
   const [subject, setSubject] = useState([]);
   const [fixedSub, setFixedSub] = useState([]);
   const [topics, setTopics] = useState("");
-  const [topicsArr, setTopicsArr] = useState(["class 10 "]);
+  const [topicsArr, setTopicsArr] = useState([]);
   const [selectedDays, setSelectedDays] = useState([]);
   const [days, setDays] = useState(mainDays);
   const [timeStartValue, setStartTimeValue] = useState(null);
   const [timeEndValue, setEndTimeValue] = useState(null);
   const [tabValue, setTabValue] = useState("1");
+  const [pendingReq, setPendingReq] = useState([]);
+  const [confirmReq, setConfirmReq] = useState([]);
+  const { state } = useContext(Context);
+
+  useEffect(() => {
+    async function callPendingReq() {
+      let res = await gyandhan.post("/student/showpendingmeet", {
+        sid: state.uniqueId,
+      });
+      res = await res.data;
+      console.log(res);
+      setPendingReq(res["pendingReq"]);
+    }
+    callPendingReq();
+    return () => {
+      setPendingReq([]);
+    };
+  }, []);
+
+  useEffect(() => {
+    async function callConfirmedReq() {
+      let res = await gyandhan.post("/student/showconfirmedmeet", {
+        sid: state.uniqueId,
+      });
+      res = await res.data;
+      console.log(res);
+      setConfirmReq(res["confiremdReq"]);
+    }
+    callConfirmedReq();
+    return () => {
+      setConfirmReq([]);
+    };
+  }, []);
 
   const handleDaysChange = (event) => {
     const {
@@ -71,6 +106,90 @@ export default function TopicSearch() {
 
   const handleTabsChange = (event, newValue) => {
     setTabValue(newValue);
+  };
+
+  const showWeekdaysChips = (weekDays) => {
+    return weekDays.map((item) => {
+      return (
+        <Chip
+          label={item}
+          sx={{
+            backgroundColor: "#FF5959",
+            color: "white",
+            margin: "0.5em 0.5em 0.5em 0",
+          }}
+        />
+      );
+    });
+  };
+
+  const showPendingRequest = () => {
+    return pendingReq.map((item) => {
+      return (
+        <Card sx={{ minWidth: 400, margin: "0.5em" }}>
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant="h5"
+              sx={{ color: "#676FA3" }}
+              component="div"
+            >
+              Subject: {item["subjects"].join(",")}
+            </Typography>
+            <Typography variant="h7">Week days:</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {showWeekdaysChips(item["weekdays"])}
+            </Typography>
+            <Typography variant="h7">Timing:</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item["startTime"]} {item["endTime"]}
+            </Typography>
+            <Typography variant="h7">Topics</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item["topics"].join(",")}
+            </Typography>
+          </CardContent>
+        </Card>
+      );
+    });
+  };
+
+  const showConfirmedReq = () => {
+    return confirmReq.map((item) => {
+      return (
+        <Card sx={{ minWidth: 400, margin: "0.5em" }}>
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant="h5"
+              sx={{ color: "#676FA3" }}
+              component="div"
+            >
+              Subject: {item["subjects"].join(",")}
+            </Typography>
+            <Typography variant="h7">Week days:</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {showWeekdaysChips(item["weekdays"])}
+            </Typography>
+            <Typography variant="h7">Timing:</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item["startTime"]} {item["endTime"]}
+            </Typography>
+            <Typography variant="h7">Topics</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item["topics"].join(",")}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Button size="small">
+              <a target="_blank" href={item["meetLink"]}>
+                Join Meet
+              </a>
+            </Button>
+          </CardActions>
+        </Card>
+      );
+    });
   };
 
   const showTopics = () => {
@@ -95,8 +214,6 @@ export default function TopicSearch() {
       return <MenuItem value={parseInt(item.value)}>{item.label}</MenuItem>;
     });
   };
-
-  //const 
 
   return (
     <SideMenu>
@@ -283,53 +400,14 @@ export default function TopicSearch() {
               </TabList>
             </Box>
             <TabPanel value="1">
-              <Card sx={{ maxWidth: 500 }}>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" sx={{color:"#676FA3"}} component="div">
-                    Subject: Lizard
-                  </Typography>
-                  <Typography variant="h7">Week days:</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    <Chip label="Sunday" sx={{backgroundColor:"#FF5959", color:"white"}} />
-                  </Typography>
-                  <Typography variant="h7">Timing:</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    11:00 AM 12:00 PM
-                  </Typography>
-                  <Typography variant="h7">Topics</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Lizards are a widespread group of squamate reptiles, with
-                    over 6,000 species, ranging across all continents except
-                    Antarctica
-                  </Typography>
-                </CardContent>
-              </Card>
+              <div className="col">
+                <div className="row">{showPendingRequest()}</div>
+              </div>
             </TabPanel>
             <TabPanel value="2">
-              <Card sx={{ maxWidth: 345 }}>
-                <CardContent>
-                  <Typography gutterBottom variant="h4" component="div">
-                    Subject: Lizard
-                  </Typography>
-                  <Typography variant="h7">Week days:</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    <Chip label="Sunday" />
-                  </Typography>
-                  <Typography variant="h7">Timing:</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    11:00 AM 12:00 PM
-                  </Typography>
-                  <Typography variant="h7">Topics</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Lizards are a widespread group of squamate reptiles, with
-                    over 6,000 species, ranging across all continents except
-                    Antarctica
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Join Meet</Button>
-                </CardActions>
-              </Card>
+              <div className="col">
+                <div className="row">{showConfirmedReq()}</div>
+              </div>
             </TabPanel>
           </TabContext>
         </Box>

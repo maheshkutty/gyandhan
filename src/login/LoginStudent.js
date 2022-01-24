@@ -42,6 +42,7 @@ export default function LoginStudent() {
         let res = await gyandhan.post("/student/login", payload);
         res = res.data;
         if (res.status == "success") {
+          sessionStorage.setItem("uniqueId", res.vals.id);
           const auth = getAuth(firebaseApp);
           setPersistence(auth, browserSessionPersistence).then(async () => {
             const data = await signInWithEmailAndPassword(
@@ -50,7 +51,7 @@ export default function LoginStudent() {
               value.pass
             );
             if (data != null) {
-              signin({ email: data.user.email, userid: data.user.uid });
+              signin({ email: data.user.email, userid: data.user.uid, uniqueId: res.vals.id });
               navigate("/student/home");
             } else {
               setErrorMsg(true);

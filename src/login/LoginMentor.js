@@ -49,7 +49,7 @@ export default function LoginStudent() {
               value.pass
             );
             if (data != null) {
-              signin({ email: data.user.email, userid: data.user.uid });
+              signin({ email: data.user.email, userid: data.user.uid, uniqueId:res.vals.id });
               navigate("/mentor/home");
             } else {
               setErrorMsg(true);
