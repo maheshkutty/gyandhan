@@ -198,8 +198,6 @@ export default function MeetRequest() {
           <CardActions>
             <Button
               variant="contained"
-              data-toggle="modal"
-              data-target="#exampleModal"
               onClick={() => {
                 if (item["meetlink"] != "") window.open(item["meetlink"]);
               }}

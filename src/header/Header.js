@@ -6,8 +6,13 @@ export default function Header(props) {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand logoColor" href="/">Gyandhan</a>
-        <div className="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <Link className="navbar-brand logoColor" to="/">
+          Gyandhan
+        </Link>
+        <div
+          className="collapse navbar-collapse justify-content-end"
+          id="navbarNavAltMarkup"
+        >
           <div className="navcol">
             <ul className="navbar-nav">
               <li className="nav-item">

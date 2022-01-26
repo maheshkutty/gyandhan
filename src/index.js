@@ -19,6 +19,7 @@ import MeetRequest from "./mentors/MeetRequest";
 import BlogsList from "./student/BlogsList";
 import BlogsContent from "./student/BlogsContent";
 import RegisterHome from "./login/RegisterHome";
+import CreateClass from "./mentors/CreateClass";
 
 import { Provider } from "./context/AuthProvider";
 
@@ -115,6 +116,14 @@ ReactDOM.render(
           element={
             <Provider>
               <MeetRequest />
+            </Provider>
+          }
+        />
+        <Route
+          path="/mentor/class"
+          element={
+            <Provider>
+              <CreateClass />
             </Provider>
           }
         />

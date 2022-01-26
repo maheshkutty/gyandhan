@@ -33,6 +33,13 @@ export default function SideMenuMentor({ children }) {
             <span>Requests</span>
           </Link>
         </li>
+
+        <li className="nav-item active">
+          <Link to="/mentor/class" className="nav-link">
+          <i class="fab fa-meetup"></i>
+            <span>Classes</span>
+          </Link>
+        </li>
       </ul>
       {children}
     </div>

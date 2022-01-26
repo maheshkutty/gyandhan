@@ -39,10 +39,8 @@
 }
 
 .row-bg-overlay {
-  height: 70%;
-  width: 100%;
   z-index: 2;
-  position: absolute;
+  position: relative;
   margin-left: 0;
   backface-visibility: hidden;
   background: #2c95a5;
@@ -53,16 +51,40 @@
   );
   opacity: 0.95;
   left: 0;
+  top: 0;
+  width: 100%;
+  height: 25em;
 }
 
-
 .imgConatiner {
-  position: absolute;
   background-image: url("../public/mentor.jpg");
   background-repeat: no-repeat;
   background-size: 100%;
   background-position: center;
-  height: 70%;
+  height: 25em;
   width: 100%;
+  top: 0;
   left: 0;
+  margin-bottom: 2em;
+}
+
+.headingText {
+  font-size: 4em;
+  color: white;
+  margin-top: 1em;
+  font-weight: bold;
+}
+
+.headingButton {
+  font-size: 1em;
+}
+
+.subText{
+  font-size: 3em;
+  color: #353535;
+  font-weight: bold;
+}
+
+p{
+  font-size: 1.5em;
 }
