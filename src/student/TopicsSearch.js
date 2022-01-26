@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import SideMenu from "./SideMenu";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -30,8 +30,8 @@ import { Context } from "../context/AuthProvider";
 
 const mainTopics = ["geography", "maths"];
 const mainDays = [
-  { value: "1", label: "mondays" },
-  { value: "2", label: "tuesday" },
+  { value: "monday", label: "monday" },
+  { value: "tuesday", label: "tuesday" },
 ];
 
 const meetRequest = {
@@ -63,16 +63,27 @@ export default function TopicSearch() {
   const [pendingReq, setPendingReq] = useState([]);
   const [confirmReq, setConfirmReq] = useState([]);
   const { state } = useContext(Context);
+  const rModal = useRef(null);
+
+  async function callPendingReq() {
+    let res = await gyandhan.post("/student/showpendingmeet", {
+      sid: state.uniqueId,
+    });
+    res = await res.data;
+    console.log(res);
+    setPendingReq(res["pendingReq"]);
+  }
+
+  async function callConfirmedReq() {
+    let res = await gyandhan.post("/student/showconfirmedmeet", {
+      sid: state.uniqueId,
+    });
+    res = await res.data;
+    console.log(res);
+    setConfirmReq(res["confiremdReq"]);
+  }
 
   useEffect(() => {
-    async function callPendingReq() {
-      let res = await gyandhan.post("/student/showpendingmeet", {
-        sid: state.uniqueId,
-      });
-      res = await res.data;
-      console.log(res);
-      setPendingReq(res["pendingReq"]);
-    }
     callPendingReq();
     return () => {
       setPendingReq([]);
@@ -80,24 +91,26 @@ export default function TopicSearch() {
   }, []);
 
   useEffect(() => {
-    async function callConfirmedReq() {
-      let res = await gyandhan.post("/student/showconfirmedmeet", {
-        sid: state.uniqueId,
-      });
-      res = await res.data;
-      console.log(res);
-      setConfirmReq(res["confiremdReq"]);
-    }
     callConfirmedReq();
     return () => {
       setConfirmReq([]);
     };
   }, []);
 
+  const resetForm = () => {
+    setSubject([]);
+    setTopicsArr([]);
+    setSelectedDays([]);
+    setStartTimeValue(null);
+    setEndTimeValue(null);
+    setTopics("");
+  };
+
   const handleDaysChange = (event) => {
     const {
       target: { value },
     } = event;
+    console.log(event.target);
     setSelectedDays(
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
@@ -167,9 +180,9 @@ export default function TopicSearch() {
             >
               Subject: {item["subjects"].join(",")}
             </Typography>
-            <Typography variant="h7">Week days:</Typography>
+            <Typography variant="h7">Date:</Typography>
             <Typography variant="body2" color="text.secondary">
-              {showWeekdaysChips(item["weekdays"])}
+              {showWeekdaysChips([item["sdate"]])}
             </Typography>
             <Typography variant="h7">Timing:</Typography>
             <Typography variant="body2" color="text.secondary">
@@ -181,11 +194,12 @@ export default function TopicSearch() {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button size="small">
-              <a target="_blank" href={item["meetLink"]}>
-                Join Meet
-              </a>
-            </Button>
+            <Button
+              size="small"
+              onClick={() => {
+                if (item["meetlink"] != "") window.open(item["meetlink"]);
+              }}
+            >Join Meet</Button>
           </CardActions>
         </Card>
       );
@@ -211,8 +225,28 @@ export default function TopicSearch() {
 
   const daysOfWeek = () => {
     return days.map((item) => {
-      return <MenuItem value={parseInt(item.value)}>{item.label}</MenuItem>;
+      return <MenuItem value={item.value}>{item.label}</MenuItem>;
     });
+  };
+
+  const submitReq = async () => {
+    const payload = {
+      sid: state.uniqueId,
+      subjects: subject,
+      topics: topicsArr,
+      startTime: timeStartValue.format("HH:mm"),
+      endTime: timeEndValue.format("HH:mm"),
+      daysOfWeek: selectedDays,
+    };
+    console.log(payload);
+    let res = await gyandhan.post("/student/askmeet", payload);
+    res = res.data;
+    console.log(res);
+    if (res.status == "success") {
+      callPendingReq();
+      callConfirmedReq();
+      rModal.current.click();
+    }
   };
 
   return (
@@ -245,6 +279,8 @@ export default function TopicSearch() {
                   className="close"
                   data-dismiss="modal"
                   aria-label="Close"
+                  ref={rModal}
+                  onClick={() => resetForm()}
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -322,7 +358,7 @@ export default function TopicSearch() {
                           multiple
                           value={selectedDays}
                           label="Days"
-                          onChange={handleDaysChange}
+                          onChange={(event) => handleDaysChange(event)}
                         >
                           {daysOfWeek()}
                         </Select>
@@ -360,11 +396,11 @@ export default function TopicSearch() {
                         </LocalizationProvider>
                       </FormControl>
                     </div>
-                    <div className="col mb-3">
+                    {/* <div className="col mb-3">
                       <FormControl fullWidth>
                         <Button variant="contained">Request Meet</Button>
                       </FormControl>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -373,11 +409,16 @@ export default function TopicSearch() {
                   type="button"
                   className="btn btn-secondary"
                   data-dismiss="modal"
+                  onClick={() => resetForm()}
                 >
                   Close
                 </button>
-                <button type="button" className="btn btn-primary">
-                  Save changes
+                <button
+                  onClick={() => submitReq()}
+                  type="button"
+                  className="btn btn-primary"
+                >
+                  Submit
                 </button>
               </div>
             </div>

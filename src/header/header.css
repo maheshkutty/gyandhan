@@ -1,8 +1,18 @@
 .navcol{
     padding: 0.8em;
+    justify-content: end;
 }
 
 .navbar-light .navbar-nav .nav-link{
     color: #555555;
+    font-size: 1.2em;
+}
+
+.navbar-light .navbar-brand {
+    color: #33b0be;
+}
+
+.logoColor{
+    font-weight: bold;
     font-size: 1.5em;
 }

@@ -1,6 +1,6 @@
 .App {
   /* text-align: center; */
-  background-color: #364F68;
+  background-color: #364f68;
 }
 
 .App-logo {
@@ -36,4 +36,33 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.row-bg-overlay {
+  height: 70%;
+  width: 100%;
+  z-index: 2;
+  position: absolute;
+  margin-left: 0;
+  backface-visibility: hidden;
+  background: #2c95a5;
+  background: linear-gradient(
+    135deg,
+    #2c95a5 0%,
+    rgba(44, 149, 165, 0.21) 100%
+  );
+  opacity: 0.95;
+  left: 0;
+}
+
+
+.imgConatiner {
+  position: absolute;
+  background-image: url("../public/mentor.jpg");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center;
+  height: 70%;
+  width: 100%;
+  left: 0;
 }

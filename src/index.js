@@ -18,6 +18,7 @@ import Doubts from "./student/Doubts";
 import MeetRequest from "./mentors/MeetRequest";
 import BlogsList from "./student/BlogsList";
 import BlogsContent from "./student/BlogsContent";
+import RegisterHome from "./login/RegisterHome";
 
 import { Provider } from "./context/AuthProvider";
 
@@ -26,8 +27,9 @@ ReactDOM.render(
     <React.StrictMode>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/signup" element={<StudentForm />} />
+        <Route path="/student" element={<StudentForm />} />
         <Route path="/login" element={<LoginHome />} />
+        <Route path="/register" element={<RegisterHome />} />
         <Route
           path="/login/student"
           element={

@@ -42,6 +42,7 @@ export default function LoginStudent() {
         res = res.data;
         if (res.status == "success") {
           const auth = getAuth(firebaseApp);
+          sessionStorage.setItem("uniqueId", res.vals.id);
           setPersistence(auth, browserSessionPersistence).then(async () => {
             const data = await signInWithEmailAndPassword(
               auth,
